@@ -14,6 +14,15 @@ const projectSchema = new mongoose.Schema({
     type: [String],
     required: [true, "Project description is required"]
   },
+  url:{
+    type: String,
+    required: [true, "URL for project is needed"]
+  },
+  myRole:{
+    type: String,
+    required: [true, "Role needs to be filled."]
+  }
+  ,
   category: {
     type: [String],
     required: [true, "Category is required"]
@@ -33,6 +42,10 @@ const projectSchema = new mongoose.Schema({
   dateAdded: {
     type: Date,
     default: Date.now
+  },
+  dateEdited: {
+    type: Date,
+    default: Date
   },
   isFeatured: {
     type: Boolean,
