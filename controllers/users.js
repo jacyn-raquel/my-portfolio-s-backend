@@ -49,7 +49,7 @@ module.exports.registerUser = async (req,res) => {
 	}
 }
 
-// Login User
+// 2) Login User
 module.exports.loginUser = async (req,res) => {
 	const {email, password} = req.body;
 
@@ -88,3 +88,96 @@ module.exports.loginUser = async (req,res) => {
 		return errorHandler(err, req, res);
 	}
 }
+
+// 3) Get All Users
+module.exports.getAllUsers = async (req, res) => {
+	try {
+		const allUsers = await User.find().sort({isAdmin: -1})
+
+		return res.status(200).json({
+			success: true,
+			message: "All Users retrieved",
+			result: allUsers
+		})
+	} catch (err){
+		return errorHandler(err, req, res);
+	}
+}
+
+// 4) Get User Profile
+module.exports.getUserProfile = async (req,res) => {
+	const {id} = req.user;
+
+	try {
+		const userData = await User.findById(id);
+
+		if (!userData) {
+			return res.status(404).json({
+				success: false,
+				message: "User does not exist"
+			})
+		}
+
+		userData.password = '';
+		return res.status(200).json(userData);
+	} catch (err){
+		return errorHandler(err,req,res);
+	}
+}
+
+// 5) Set User as an Admin
+module.exports.setAsAdmin = async (req,res) => {
+
+	const {userId} = req.params;
+
+	if (!req.user || req.user.isAdmin === false) {
+		return res.status(403).json({
+			success: false,
+			message: "Access denied. Admins only."
+		})
+	}
+
+	try {
+		const user = await User.findById(userId);
+
+		if (!user) {
+			return res.status(404).json({
+				success: false,
+				message: "User not found"
+			})
+		}
+
+		user.isAdmin = true;
+		await user.save();
+
+		return res.status(200).json({
+			success: true,
+			message: "User is now set as an admin"
+		})
+	} catch (err) {
+		return errorHandler(err,req,res);
+	}
+}
+
+// 6) Reset Password
+module.exports.resetPassword = async (req,res) => {
+	const newPassword = req.body.password;
+	const {id} = req.user;
+
+	try {
+		// Hashing the new password
+		const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+		// Updating the user's password in the database
+		await User.findByIdAndUpdate(id, {password: hashedPassword});
+
+		// Sending a success response
+		return res.status(200).json({
+			success: true,
+			message: "Password resetted successfully"
+		})
+	} catch (err) {
+		return errorHandler(err,req,res);
+	}
+}
+
