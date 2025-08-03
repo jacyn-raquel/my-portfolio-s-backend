@@ -24,11 +24,11 @@ router.patch('/:projectId', verify, verifyAdmin, [
   body('isFeatured').optional().isBoolean()
 ], projectControllers.editSpecificProject);
 
-// // 5) Archive Project
-// router.patch('/:projectId/archive',verify, verifyAdmin, projectControllers.archiveProject);
+// 5) Archive Project
+router.patch('/:projectId/archive',verify, verifyAdmin, projectControllers.archiveProject);
 
-// // 6) Activate Project
-// router.patch('/:projectId/activate', verify, verifyAdmin, projectControllers.activateProject);
+// 6) Activate Project
+router.patch('/:projectId/activate', verify, verifyAdmin, projectControllers.activateProject);
 
 // 7) Delete a Project
 router.delete('/:projectId', verify, verifyAdmin, projectControllers.deleteProject);
