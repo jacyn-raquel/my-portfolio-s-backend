@@ -144,9 +144,7 @@ module.exports.archiveProject = async (req,res) => {
 	  }
 
 	try {
-		const projectToArchive = await Project.findByIdAndUpdate(projectId,
-			{isActive: false},
-			{new: true});
+		const projectToArchive = await Project.findById(projectId);
 
 		if (!projectToArchive){
 			return res.status(404).json({
@@ -160,6 +158,9 @@ module.exports.archiveProject = async (req,res) => {
 				message: "Project already archived."
 			})
 		}
+
+		projectToArchive.isActive = false;
+		await projectToArchive.save();
 
 		return res.status(200).json({
 			success: true,
@@ -182,9 +183,7 @@ module.exports.activateProject = async (req,res) => {
 	  }
 
 	try {
-		const projectToActivate = await Project.findByIdAndUpdate(projectId,
-			{isActive: true},
-			{new: true});
+		const projectToActivate = await Project.findById(projectId);
 
 		if (!projectToActivate){
 			return res.status(404).json({
@@ -199,6 +198,9 @@ module.exports.activateProject = async (req,res) => {
 				message: "Project already activated."
 			})
 		}
+
+		projectToActivate.isActive = true;
+		await projectToActivate.save();
 
 		return res.status(200).json({
 			success: true,
