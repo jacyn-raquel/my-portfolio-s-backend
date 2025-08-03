@@ -50,6 +50,10 @@ const projectSchema = new mongoose.Schema({
   isFeatured: {
     type: Boolean,
     default: false
+  },
+  isActive: {
+    type: Boolean,
+    default: true
   }
 });
 

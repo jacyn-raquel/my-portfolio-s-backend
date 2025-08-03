@@ -5,16 +5,16 @@ const {body} = require('express-validator');
 const projectControllers = require('../controllers/projects');
 const {verify, verifyAdmin} = require('../auth');
 
-// Add Project
+// 1) Add Project
 router.post('/', verify, verifyAdmin, projectControllers.addProject);
 
-// Get All Projects
+// 2) Get All Projects
 router.get('/', projectControllers.getAllProjects);
 
-// Get Specific Project
+// 3) Get Specific Project
 router.get('/:projectId', projectControllers.getSpecificProject);
 
-// Edit/Update Project
+// 4) Edit/Update Project
 router.patch('/:projectId', verify, verifyAdmin, [
   body('title').optional().isString().trim().notEmpty(),
   body('projectDescription').optional().isArray(),
@@ -24,7 +24,14 @@ router.patch('/:projectId', verify, verifyAdmin, [
   body('isFeatured').optional().isBoolean()
 ], projectControllers.editSpecificProject);
 
-// Delete a Project
+// // 5) Archive Project
+// router.patch('/:projectId/archive',verify, verifyAdmin, projectControllers.archiveProject);
+
+// // 6) Activate Project
+// router.patch('/:projectId/activate', verify, verifyAdmin, projectControllers.activateProject);
+
+// 7) Delete a Project
 router.delete('/:projectId', verify, verifyAdmin, projectControllers.deleteProject);
+
 
 module.exports = router;

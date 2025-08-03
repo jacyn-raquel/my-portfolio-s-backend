@@ -133,7 +133,84 @@ module.exports.editSpecificProject = async(req,res) => {
 	}
 }
 
-// 5) Delete Project
+// 5) Archive Project
+module.exports.archiveProject = async (req,res) => {
+	const {projectId} = req.params;
+
+	const errors = validationResult(req);
+
+	if (!errors.isEmpty()) {
+	    return res.status(400).json({ errors: errors.array() });
+	  }
+
+	try {
+		const projectToArchive = await Project.findByIdAndUpdate(projectId,
+			{isActive: false},
+			{new: true});
+
+		if (!projectToArchive){
+			return res.status(404).json({
+				success: false,
+				message: "Project is not found. Probably deleted already."
+			})
+		}
+
+		if (projectToArchive.isActive === false){
+			return res.status(409).json({
+				message: "Project already archived."
+			})
+		}
+
+		return res.status(200).json({
+			success: true,
+			message: "Project is now archived successfully",
+			project: projectToArchive
+		})
+	} catch (err) {
+		return errorHandler(err,req,res);
+	}
+}
+
+// 6) Activate Project
+module.exports.activateProject = async (req,res) => {
+	const {projectId} = req.params;
+
+	const errors = validationResult(req);
+
+	if (!errors.isEmpty()) {
+	    return res.status(400).json({ errors: errors.array() });
+	  }
+
+	try {
+		const projectToActivate = await Project.findByIdAndUpdate(projectId,
+			{isActive: true},
+			{new: true});
+
+		if (!projectToActivate){
+			return res.status(404).json({
+				success: false,
+				message: "Project is not found. Probably deleted already."
+			})
+		}
+
+		if (projectToActivate.isActive === true){
+			return res.status(409).json({
+				success: false,
+				message: "Project already activated."
+			})
+		}
+
+		return res.status(200).json({
+			success: true,
+			message: "Project is now activated successfully",
+			project: projectToActivate
+		})
+	} catch (err){
+		return errorHandler(err,req,res);
+	}
+}
+
+// 7) Delete Project
 module.exports.deleteProject = async (req,res) => {
 	const {projectId} = req.params;
 
